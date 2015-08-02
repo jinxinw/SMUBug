@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>SMU Bug Report</title>
+    </h:head>
+    <h:body>
+        <h:form id="form">
+            <p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="80" header="User Information" resizable="true" closable="true" collapsible="true">
+                    <p:outputLabel for="output1" value="Welcome BugDB User: " />
+                    <h:outputText id="output1" value="#{appHandler.user.name}"/>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="west" size="400" resizable="true" closable="true" collapsible="true">
+                    <h:form id="form1">
+                        <p:panel id="Criteria" header="Criteria" style="margin-bottom:20px">
+                            <h:panelGrid columns="2" cellpadding="5">
+                                <p:outputLabel for="release" value="Reported Release" />
+                                <h:selectOneMenu id="release" value="#{appHandler.criteria.release}" label="Report Release" immediate="true">
+                                    <f:selectItem itemLabel="ALL" itemValue="ALL" />
+                                    <f:selectItem itemLabel="1.3" itemValue="1.3" />
+                                    <f:selectItem itemLabel="1.2" itemValue="1.2" />
+                                    <f:selectItem itemLabel="1.1" itemValue="1.1" />
+                                </h:selectOneMenu>
+
+                                <p:outputLabel for="bugType" value="Bug Type" />
+                                <h:selectOneMenu id="bugType" value="#{appHandler.criteria.type}" label="bugType" immediate="true">
+                                    <f:selectItem itemLabel="ALL" itemValue="ALL" />
+                                    <f:selectItem itemLabel="BUG" itemValue="BUG" />
+                                    <f:selectItem itemLabel="ER" itemValue="ER" />
+                                </h:selectOneMenu>
+
+                                <p:outputLabel for="Tag" value="Tag" />
+                                <h:selectOneMenu id="Tag" value="#{appHandler.criteria.tag}" label="bugType" immediate="true">
+                                    <f:selectItem itemLabel="NONE" itemValue="NONE" />
+                                    <f:selectItem itemLabel="target_1.3.0" itemValue="target_1.3.0" />
+                                    <f:selectItem itemLabel="target_1.2.2" itemValue="target_1.2.2" />
+                                    <f:selectItem itemLabel="future_release" itemValue="future_release" />
+                                </h:selectOneMenu>
+
+                            </h:panelGrid>
+                            <p:commandButton value="Update Report" actionListener="#{appHandler.generate}" icon="ui-icon-check"/>
+                        </p:panel>
+                        <p:panel id="Statistics" header="Weekly Report Statistics" style="margin-bottom:20px">
+                            <h:panelGrid columns="2" cellpadding="5">
+                                <p:outputLabel for="timePeriod" value="Time Period (Days)" />
+                                <h:outputText id="timePeriod" value="#{appHandler.bugs.timePeriod}"/>
+
+                                <p:outputLabel for="weekPeriod" value="Time Period (Weeks)" />
+                                <h:outputText id="weekPeriod" value="#{appHandler.bugs.totalWeek}"/>
+
+                                <p:outputLabel for="reportNum" value="Total Reported Bugs" />
+                                <h:outputText id="reportNum" value="#{appHandler.bugs.totalReportNum}"/>
+
+                                <p:outputLabel for="fixNum" value="Total Fixed Bugs" />
+                                <h:outputText id="fixNum" value="#{appHandler.bugs.totalFixNum}"/>
+
+                                <p:outputLabel for="reportRate" value="Bug Report Rate Per Week" />
+                                <h:outputText id="reportRate" value="#{appHandler.bugs.weeklyReportRate}"/>
+
+                                <p:outputLabel for="fixRate" value="Bug Fix Rate Per Week" />
+                                <h:outputText id="fixRate" value="#{appHandler.bugs.weeklyFixRate}"/>
+                            </h:panelGrid>
+                        </p:panel>
+                    </h:form>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="east" size="550" header="Current Status" resizable="true" closable="true" collapsible="true" effect="drop">
+                    <p:panel id="notes" header="Notes" style="margin-bottom:20px">
+                        <h5>
+                            Open Status: <br />
+                            0, 11, 12, 13, 15, 14, 16, 17, 19, 21, 22, 23, 24, 25, 26, 30, 39, 40, 51, 52
+                            <br />
+                            <br />
+                            Fixed Status: <br />
+                            20, 31, 32, 33, 35, 36, 37, 43, 44, 45, 53, 80, 81, 82, 87, 89
+                            <br />
+                            <br />
+                            Closed Status: <br />
+                            70, 71, 72, 73, 74, 75, 76, 77, 78, 83, 84, 85, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99
+                        </h5>
+                    </p:panel>
+                    <p:panel id="StatusChart" header="Status Chart" style="margin-bottom:20px">
+                        <p:chart type="bar" model="#{appHandler.barModel}" style="height:500px; width:400px;"/>
+                        <br />
+                        <br />
+                        <p:chart id="pieChart2" type="pie" model="#{appHandler.pieModel2}" style="width:400px;height:300px" />
+                        <br />
+                        <br />
+                        <p:chart id="pieChart1" type="pie" model="#{appHandler.pieModel1}" style="width:400px;height:300px" />
+                    </p:panel>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+                    <p:layout>
+                        <p:layoutUnit position="north" size="500" header="Weekly Report" resizable="true">
+                            <p:dataTable id="bugSum" var="bug" value="#{appHandler.bugs.bugs}">
+                                <p:column headerText="Week#">
+                                    <h:outputText value="#{bug.weekNum}" />
+                                </p:column>
+                                <p:column headerText="Week Start">
+                                    <h:outputText value="#{bug.weekStart}" />
+                                </p:column>
+                                <p:column headerText="Week End">
+                                    <h:outputText value="#{bug.weekEnd}" />
+                                </p:column>
+                                <p:column headerText="Reported#">
+                                    <h:outputText value="#{bug.reportedNum}" />
+                                </p:column>
+                                <p:column style="width:32px;text-align: center">
+                                    <p:commandButton update=":form:bugReportedDetail" oncomplete="PF('bugReportedDialog').show()" icon="ui-icon-search" title="View">
+                                        <f:setPropertyActionListener value="#{bug}" target="#{appHandler.selectedBug}" />
+                                    </p:commandButton>
+                                </p:column>
+                                <p:column headerText="Fixed#">
+                                    <h:outputText value="#{bug.fixedNum}" />
+                                </p:column>
+                                <p:column style="width:32px;text-align: center">
+                                    <p:commandButton update=":form:bugFixedDetail" oncomplete="PF('bugFixedDialog').show()" icon="ui-icon-search" title="View">
+                                        <f:setPropertyActionListener value="#{bug}" target="#{appHandler.selectedBug}" />
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:layoutUnit>
+                        <p:layoutUnit position="center">                   
+                            <p:chart id="areaChart" type="line" model="#{appHandler.areaModel}" style="height:300px" />
+                        </p:layoutUnit>
+                    </p:layout>
+                </p:layoutUnit>
+            </p:layout>
+            <p:dialog header="Bug Reported Info" widgetVar="bugReportedDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" width="700" height="400">
+                <p:outputPanel id="bugReportedDetail" style="text-align:center;">
+                    <p:dataTable var="bug" value="#{appHandler.selectedBug.reportedList}">
+                        <p:column headerText="ID" width="80">
+                            <p:link value="#{bug.id}" target="_blank" href="#{bug.URL}" style="text-decoration:none;color:blue;"/>
+                        </p:column>
+
+                        <p:column headerText="Report Date" width="100">
+                            <h:outputText value="#{bug.reportedDateVal}" />
+                        </p:column>
+
+                        <p:column headerText="Assignee" width="80">
+                            <h:outputText value="#{bug.assignee}" />
+                        </p:column>
+
+                        <p:column headerText="Rel" width="40">
+                            <h:outputText value="#{bug.release}" />
+                        </p:column>
+                        <p:column headerText="Subject">
+                            <h:outputText value="#{bug.subject}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </p:dialog>
+            <p:dialog header="Bug Fixed Info" widgetVar="bugFixedDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" width="700" height="400">
+                <p:outputPanel id="bugFixedDetail" style="text-align:center;">
+                    <p:dataTable var="bug" value="#{appHandler.selectedBug.fixedList}">
+                        <p:column headerText="ID" width="80">
+                            <p:link value="#{bug.id}" target="_blank" href="#{bug.URL}" style="text-decoration:none;color:blue;"/>
+                        </p:column>
+
+                        <p:column headerText="Report Date" width="80">
+                            <h:outputText value="#{bug.fixedDateVal}" />
+                        </p:column>
+
+                        <p:column headerText="Assignee" width="80">
+                            <h:outputText value="#{bug.assignee}" />
+                        </p:column>
+
+                        <p:column headerText="Rel" width="40">
+                            <h:outputText value="#{bug.release}" />
+                        </p:column>
+                        <p:column headerText="Subject">
+                            <h:outputText value="#{bug.subject}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+    </h:body>
+</html>
+
