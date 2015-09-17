@@ -17,7 +17,19 @@ public class BugReport implements Serializable {
     private int[] fixStatus = {20, 31, 32, 33, 35, 36, 37, 43, 44, 45, 53, 80, 81, 82, 87, 89};
     private int[] openStatus = {10, 11, 12, 13, 15, 14, 16, 17, 19, 21, 22, 23, 24, 25, 26, 30, 39, 40, 51, 52};
     private int[] closedStatus = {70, 71, 72, 73, 74, 75, 76, 77, 78, 83, 84, 85, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99};
-    private String[] members = {"CHACHCHE", "OWHALL", "VIJIN", "VKALIMUT", "JEOKIM", "HUAL", "JPANEM", "WENSHI", "ZEXU", "XINRYU", "RESANDER", "YAFLI"};
+    //private String[] members = {"CHACHCHE", "OWHALL", "VIJIN", "VKALIMUT", "JEOKIM", "HUAL", "JPANEM", "WENSHI", "ZEXU", "XINRYU", "RESANDER", "YAFLI"};
+
+    private final int[] SMU_BUG_DEV = {11, 13, 17, 25};
+    private final int[] SMU_BUG_FIX = {60, 80, 74, 83, 84, 90, 91, 92, 93, 96};
+    private final int[] SMU_BUG_SENDBACK = {30, 31, 32, 36, 43, 44};
+
+    private final int[] SMU_ER_DEV = {15, 19, 25};
+    private final int[] SMU_ER_FIX = {60, 82, 98, 94, 97};
+    private final int[] SMU_ER_SENDBACK = {20};
+
+    private final int[] SMU_DEV = {11, 13, 15, 17, 19, 25};
+    private final int[] SMU_FIX = {60, 74, 80, 82, 83, 84, 90, 91, 92, 93, 94, 96, 97};
+    private final int[] SMU_SENDBACK = {20, 30, 31, 32, 36, 43, 44};
 
     public BugReport(List<Bug> bugReport) {
         this.bugReport = bugReport;
@@ -35,7 +47,7 @@ public class BugReport implements Serializable {
     }
 
     public Map<String, Integer[]> getBugSummary(Calendar startDate, Calendar endDate, Map<CriteriaType, String> criteria) {
-        Map<String, Integer[]> map = new LinkedHashMap<String, Integer[]>();
+        Map<String, Integer[]> map = new LinkedHashMap<>();
         SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
         Calendar cal1 = (Calendar) startDate.clone();
         Calendar cal2 = (Calendar) startDate.clone();
@@ -61,21 +73,28 @@ public class BugReport implements Serializable {
     private int[] countBugs(List<Bug> bugs, Calendar cal1, Calendar cal2, Map<CriteriaType, String> criteria) {
         int report = 0;
         int fix = 0;
-        int[] res = new int[2];
+        int sendBack = 0;
+        int[] res = new int[3];
         for (Bug b : bugs) {
             if (matchCriteria(b, criteria)) {
                 if (b.getReportedDate().after(cal1) && b.getReportedDate().before(cal2) || b.getReportedDate().equals(cal1)) {
                     report++;
                 }
                 if (b.getFixedDate() != null) {
-                    if (b.getFixedDate().after(cal1) && b.getFixedDate().before(cal2) || b.getFixedDate().equals(cal1)) {
+                    if ((b.getFixedDate().after(cal1) && b.getFixedDate().before(cal2) || b.getFixedDate().equals(cal1)) && containsStatus(SMU_FIX, b.getStatus())) {
                         fix++;
+                    }
+                }
+                if (b.getFixedDate() != null) {
+                    if ((b.getFixedDate().after(cal1) && b.getFixedDate().before(cal2) || b.getFixedDate().equals(cal1)) && containsStatus(SMU_SENDBACK, b.getStatus())) {
+                        sendBack++;
                     }
                 }
             }
         }
         res[0] = report;
         res[1] = fix;
+        res[2] = sendBack;
         return res;
     }
 
@@ -149,7 +168,7 @@ public class BugReport implements Serializable {
     public int getOpenNum(Map<CriteriaType, String> criteria) {
         int i = 0;
         for (Bug b : bugReport) {
-            if (containsStatus(openStatus, b.getStatus()) && matchCriteria(b, criteria)) {
+            if ((containsStatus(SMU_DEV, b.getStatus()) || containsStatus(SMU_SENDBACK, b.getStatus())) && matchCriteria(b, criteria)) {
                 i++;
             }
         }
@@ -180,6 +199,7 @@ public class BugReport implements Serializable {
         List<List<Bug>> res = new ArrayList<List<Bug>>();
         List<Bug> report = new ArrayList<Bug>();
         List<Bug> fix = new ArrayList<Bug>();
+        List<Bug> sendBack = new ArrayList<Bug>();
         for (Bug b : bugReport) {
             if (matchCriteria(b, criteria)) {
                 //System.out.println(b.getReportedDate().getTime() + " " + cal1.getTime() + " " + cal2.getTime());
@@ -187,14 +207,20 @@ public class BugReport implements Serializable {
                     report.add(b);
                 }
                 if (b.getFixedDate() != null) {
-                    if (b.getFixedDate().after(cal1) && b.getFixedDate().before(cal2) || b.getFixedDate().equals(cal1)) {
+                    if ((b.getFixedDate().after(cal1) && b.getFixedDate().before(cal2) || b.getFixedDate().equals(cal1)) && containsStatus(SMU_FIX, b.getStatus())) {
                         fix.add(b);
+                    }
+                }
+                if (b.getFixedDate() != null) {
+                    if ((b.getFixedDate().after(cal1) && b.getFixedDate().before(cal2) || b.getFixedDate().equals(cal1)) && containsStatus(SMU_SENDBACK, b.getStatus())) {
+                        sendBack.add(b);
                     }
                 }
             }
         }
         res.add(report);
         res.add(fix);
+        res.add(sendBack);
         return res;
     }
 
@@ -205,16 +231,15 @@ public class BugReport implements Serializable {
 
     public Map<String, Integer> countBugByAssinee(Map<CriteriaType, String> criteria) {
         Map<String, Integer> map = new HashMap<String, Integer>();
-        int[] counts = new int[members.length];
         for (Bug b : bugReport) {
-            for (int i = 0; i < members.length; i++) {
-                if (b.getAssignee().equals(members[i]) && containsStatus(openStatus, b.getStatus()) && matchCriteria(b, criteria)) {
-                    counts[i]++;
+            if ((containsStatus(SMU_DEV, b.getStatus()) || containsStatus(SMU_SENDBACK, b.getStatus())) && matchCriteria(b, criteria)) {
+                if (map.containsKey(b.getAssignee())) {
+                    int count = map.get(b.getAssignee());
+                    map.put(b.getAssignee(), count + 1);
+                } else {
+                    map.put(b.getAssignee(), 1);
                 }
             }
-        }
-        for (int j = 0; j < members.length; j++) {
-            map.put(members[j], counts[j]);
         }
         return map;
     }

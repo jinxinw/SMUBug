@@ -110,20 +110,22 @@
                                     <h:outputText value="#{bug.weekEnd}" />
                                 </p:column>
                                 <p:column headerText="Reported#">
-                                    <h:outputText value="#{bug.reportedNum}" />
-                                </p:column>
-                                <p:column style="width:32px;text-align: center">
-                                    <p:commandButton update=":form:bugReportedDetail" oncomplete="PF('bugReportedDialog').show()" icon="ui-icon-search" title="View">
+                                    <p:commandLink update=":form:bugReportedDetail" oncomplete="PF('bugReportedDialog').show()" title="View">
+                                        <h:outputText value="#{bug.reportedNum}" />
                                         <f:setPropertyActionListener value="#{bug}" target="#{appHandler.selectedBug}" />
-                                    </p:commandButton>
+                                    </p:commandLink>                                    
                                 </p:column>
                                 <p:column headerText="Fixed#">
-                                    <h:outputText value="#{bug.fixedNum}" />
-                                </p:column>
-                                <p:column style="width:32px;text-align: center">
-                                    <p:commandButton update=":form:bugFixedDetail" oncomplete="PF('bugFixedDialog').show()" icon="ui-icon-search" title="View">
+                                    <p:commandLink update=":form:bugFixedDetail" oncomplete="PF('bugFixedDialog').show()" title="View">
                                         <f:setPropertyActionListener value="#{bug}" target="#{appHandler.selectedBug}" />
-                                    </p:commandButton>
+                                        <h:outputText value="#{bug.fixedNum}" />
+                                    </p:commandLink>                                   
+                                </p:column>
+                                <p:column headerText="Sended Back#">
+                                    <p:commandLink update=":form:bugSendedBackDetail" oncomplete="PF('bugSendedBackDialog').show()" title="View">
+                                        <f:setPropertyActionListener value="#{bug}" target="#{appHandler.selectedBug}" />
+                                        <h:outputText value="#{bug.sendedBackNum}" />
+                                    </p:commandLink>                                   
                                 </p:column>
                             </p:dataTable>
                         </p:layoutUnit>
@@ -149,7 +151,7 @@
                         </p:column>
 
                         <p:column headerText="Rel" width="40">
-                            <h:outputText value="#{bug.release}" />
+                            <h:outputText value="#{bug.status}" />
                         </p:column>
                         <p:column headerText="Subject">
                             <h:outputText value="#{bug.subject}" />
@@ -164,7 +166,7 @@
                             <p:link value="#{bug.id}" target="_blank" href="#{bug.URL}" style="text-decoration:none;color:blue;"/>
                         </p:column>
 
-                        <p:column headerText="Report Date" width="80">
+                        <p:column headerText="Fixed Date" width="80">
                             <h:outputText value="#{bug.fixedDateVal}" />
                         </p:column>
 
@@ -173,7 +175,31 @@
                         </p:column>
 
                         <p:column headerText="Rel" width="40">
-                            <h:outputText value="#{bug.release}" />
+                            <h:outputText value="#{bug.status}" />
+                        </p:column>
+                        <p:column headerText="Subject">
+                            <h:outputText value="#{bug.subject}" />
+                        </p:column>
+                    </p:dataTable>
+                </p:outputPanel>
+            </p:dialog>
+            <p:dialog header="Bug Sended Back Info" widgetVar="bugSendedBackDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" width="700" height="400">
+                <p:outputPanel id="bugSendedBackDetail" style="text-align:center;">
+                    <p:dataTable var="bug" value="#{appHandler.selectedBug.sendedBackList}">
+                        <p:column headerText="ID" width="80">
+                            <p:link value="#{bug.id}" target="_blank" href="#{bug.URL}" style="text-decoration:none;color:blue;"/>
+                        </p:column>
+
+                        <p:column headerText="Sended Back Date" width="80">
+                            <h:outputText value="#{bug.fixedDateVal}" />
+                        </p:column>
+
+                        <p:column headerText="Assignee" width="80">
+                            <h:outputText value="#{bug.assignee}" />
+                        </p:column>
+
+                        <p:column headerText="Rel" width="40">
+                            <h:outputText value="#{bug.status}" />
                         </p:column>
                         <p:column headerText="Subject">
                             <h:outputText value="#{bug.subject}" />

@@ -140,9 +140,10 @@ public class AppHandler implements Serializable {
         for (String s : map.keySet()) {
             String[] sa = s.split(" to ");
             Integer[] value = map.get(s);
-            BugSummary bs = new BugSummary(i++, sa[0], sa[1], value[0], value[1]);
+            BugSummary bs = new BugSummary(i++, sa[0], sa[1], value[0], value[1], value[2]);
             bs.setReportedList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(0));
             bs.setFixedList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(1));
+            bs.setSendedBackList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(2));
             bugs.addBug(bs);
         }
         createAreaModel();
@@ -161,13 +162,17 @@ public class AppHandler implements Serializable {
         LineChartSeries fix = new LineChartSeries();
         //fix.setFill(true);
         fix.setLabel("Fixed");
+        LineChartSeries sendBack = new LineChartSeries();
+        sendBack.setLabel("Sended Back");
         for (BugSummary bs : bugs.getBugs()) {
             report.set(bs.getWeekNum(), bs.getReportedNum());
             fix.set(bs.getWeekNum(), bs.getFixedNum());
+            sendBack.set(bs.getWeekNum(), bs.getSendedBackNum());
         }
 
         areaModel.addSeries(report);
         areaModel.addSeries(fix);
+        areaModel.addSeries(sendBack);
 
         areaModel.setTitle("Weekly Report Trend Chart");
         areaModel.setLegendPosition("nw");
@@ -270,9 +275,10 @@ public class AppHandler implements Serializable {
         for (String s : map.keySet()) {
             String[] sa = s.split(" to ");
             Integer[] value = map.get(s);
-            BugSummary bs = new BugSummary(i++, sa[0], sa[1], value[0], value[1]);
+            BugSummary bs = new BugSummary(i++, sa[0], sa[1], value[0], value[1], value[2]);
             bs.setReportedList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(0));
             bs.setFixedList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(1));
+            bs.setSendedBackList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(2));
             bugs.addBug(bs);
         }
         createAreaModel();
