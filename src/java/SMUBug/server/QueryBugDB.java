@@ -5,14 +5,10 @@
 package SMUBug.server;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,9 +19,9 @@ import java.util.logging.Logger;
 public class QueryBugDB {
     // Bug Production DB TNSNAME
 
-    private String productionBugDB = "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=amogridxp01-scan.us.oracle.com)(PORT = 1523)) (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME = bugap_adx.us.oracle.com)))";
+    private final String productionBugDB = "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=amogridxp01-scan.us.oracle.com)(PORT = 1523)) (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME = bugap_adx.us.oracle.com)))";
     // User Acceptance Test DB TNSNAME
-    private String userAcceptanceBugDB = "(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=tcp)(HOST=atd205-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd205-crs.us.oracle.com)(PORT=1522))(ADDRESS=(PROTOCOL=tcp)(HOST=atd206-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd206-crs.us.oracle.com)(PORT=1522))(ADDRESS=(PROTOCOL=tcp)(HOST=atd207-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd207-crs.us.oracle.conm)(PORT=1522))(ADDRESS=(PROTOCOL=tcp)(HOST=atd208-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd208-crs.us.oracle.com)(PORT=1522)))(CONNECT_DATA=(SERVICE_NAME=bugau.us.oracle.com)))";
+    private final String userAcceptanceBugDB = "(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=tcp)(HOST=atd205-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd205-crs.us.oracle.com)(PORT=1522))(ADDRESS=(PROTOCOL=tcp)(HOST=atd206-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd206-crs.us.oracle.com)(PORT=1522))(ADDRESS=(PROTOCOL=tcp)(HOST=atd207-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd207-crs.us.oracle.conm)(PORT=1522))(ADDRESS=(PROTOCOL=tcp)(HOST=atd208-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd208-crs.us.oracle.com)(PORT=1522)))(CONNECT_DATA=(SERVICE_NAME=bugau.us.oracle.com)))";
     public Connection conn;
 
     public QueryBugDB() {

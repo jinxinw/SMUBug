@@ -56,3 +56,4 @@ build/web/WEB-INF/lib/javax.faces.jar
 build/web/WEB-INF/lib/jxl.jar
 build/web/WEB-INF/lib/primefaces-5.0.jar
 dist/SMUBug.war
+/build/
