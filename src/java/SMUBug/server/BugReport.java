@@ -243,4 +243,32 @@ public class BugReport implements Serializable {
         }
         return map;
     }
+
+    public List<String> getAllReleases(Calendar startDate) {
+        List<String> res = new ArrayList<String>();
+        for (Bug b : bugReport) {
+            if (b.getReportedDate().after(startDate) || (b.getFixedDate() != null && b.getFixedDate().after(startDate))) {
+                if (!res.contains(b.getRelease())) {
+                    res.add(b.getRelease());
+                }
+            }
+        }
+        return res;
+    }
+
+    public List<String> getAllTargets(Calendar startDate) {
+        List<String> res = new ArrayList<String>();
+        for (Bug b : bugReport) {
+            if (b.getReportedDate().after(startDate) || (b.getFixedDate() != null && b.getFixedDate().after(startDate))) {
+                String[] tags = b.getTag().split(",");
+                for (String s : tags) {
+                    s = s.trim();
+                    if (!res.contains(s) && !s.isEmpty()) {
+                        res.add(s);
+                    }
+                }
+            }
+        }
+        return res;
+    }
 }

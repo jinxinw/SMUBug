@@ -12,6 +12,7 @@ import SMUBug.server.CriteriaType;
 import SMUBug.server.QueryBugDB;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import java.util.Map;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import org.primefaces.model.chart.Axis;
 import org.primefaces.model.chart.AxisType;
 import org.primefaces.model.chart.CategoryAxis;
@@ -42,6 +44,8 @@ public class AppHandler implements Serializable {
     private BugReport bugReport;
     private BugSummary selectedBug;
     private HorizontalBarChartModel barModel;
+    private List<SelectItem> targets;
+    private List<SelectItem> releases;
 
     public AppHandler() {
         this.user = new UserView();
@@ -118,6 +122,22 @@ public class AppHandler implements Serializable {
 
     public void setBarModel(HorizontalBarChartModel barModel) {
         this.barModel = barModel;
+    }
+
+    public List<SelectItem> getTargets() {
+        return targets;
+    }
+
+    public void setTargets(List<SelectItem> targets) {
+        this.targets = targets;
+    }
+
+    public List<SelectItem> getReleases() {
+        return releases;
+    }
+
+    public void setReleases(List<SelectItem> releases) {
+        this.releases = releases;
     }
 
     public void click() throws IOException, Exception {
@@ -266,6 +286,8 @@ public class AppHandler implements Serializable {
         QueryBugDB qbd = new QueryBugDB();
         bugReport = qbd.generateBugReport(user.getName(), user.getPassword());
         bugs = new BugSummaryTableView();
+        initReleaseSelect(cal1);
+        initTargetSelect(cal1);
         criteria = new CriteriaView();
         criteria.setRelease("ALL");
         criteria.setType("ALL");
@@ -285,5 +307,19 @@ public class AppHandler implements Serializable {
         createBarModel();
         createPieModel1();
         createPieModel2();
+    }
+
+    private void initReleaseSelect(Calendar startDate) {
+        releases = new ArrayList<SelectItem>();
+        for (String s : bugReport.getAllReleases(startDate)) {
+            releases.add(new SelectItem(s));
+        }
+    }
+
+    private void initTargetSelect(Calendar startDate) {
+        targets = new ArrayList<SelectItem>();
+        for (String s : bugReport.getAllTargets(startDate)) {
+            targets.add(new SelectItem(s));
+        }
     }
 }
