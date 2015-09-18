@@ -19,7 +19,7 @@ public class BugReport implements Serializable {
     private int[] closedStatus = {70, 71, 72, 73, 74, 75, 76, 77, 78, 83, 84, 85, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99};
     //private String[] members = {"CHACHCHE", "OWHALL", "VIJIN", "VKALIMUT", "JEOKIM", "HUAL", "JPANEM", "WENSHI", "ZEXU", "XINRYU", "RESANDER", "YAFLI"};
 
-    private final int[] SMU_BUG_DEV = {11, 13, 17, 25};
+    private final int[] SMU_BUG_DEV = {11, 13, 17, 25, 40};
     private final int[] SMU_BUG_FIX = {60, 80, 74, 83, 84, 90, 91, 92, 93, 96};
     private final int[] SMU_BUG_SENDBACK = {30, 31, 32, 36, 43, 44};
 
@@ -27,7 +27,7 @@ public class BugReport implements Serializable {
     private final int[] SMU_ER_FIX = {60, 82, 98, 94, 97};
     private final int[] SMU_ER_SENDBACK = {20};
 
-    private final int[] SMU_DEV = {11, 13, 15, 17, 19, 25};
+    private final int[] SMU_DEV = {11, 13, 15, 17, 19, 25, 40};
     private final int[] SMU_FIX = {60, 74, 80, 82, 83, 84, 90, 91, 92, 93, 94, 96, 97};
     private final int[] SMU_SENDBACK = {20, 30, 31, 32, 36, 43, 44};
 

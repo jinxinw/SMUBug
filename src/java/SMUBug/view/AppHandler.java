@@ -246,9 +246,9 @@ public class AppHandler implements Serializable {
         pieModel2 = new PieChartModel();
         Map<CriteriaType, String> criteriaMap = new HashMap<CriteriaType, String>();
         criteriaMap.put(CriteriaType.TAG, criteria.getTag());
-        pieModel2.set("Open Bugs", bugReport.getOpenNum(criteriaMap));
-        pieModel2.set("Closed Bugs", bugReport.getClosedNum(criteriaMap));
-        pieModel2.set("Fixed Bugs", bugReport.getFixedNum(criteriaMap));
+        pieModel2.set("Open", bugReport.getOpenNum(criteriaMap));
+        pieModel2.set("Closed", bugReport.getClosedNum(criteriaMap));
+        pieModel2.set("Fixed", bugReport.getFixedNum(criteriaMap));
         pieModel2.set("Other", bugReport.getTotalNum(criteriaMap) - bugReport.getOpenNum(criteriaMap) - bugReport.getClosedNum(criteriaMap) - bugReport.getFixedNum(criteriaMap));
 
         String title = criteria.getTag().equals("NONE") ? "ALL" : criteria.getTag();

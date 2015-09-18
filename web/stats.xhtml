@@ -42,6 +42,33 @@
                             </h:panelGrid>
                             <p:commandButton value="Update Report" actionListener="#{appHandler.generate}" icon="ui-icon-check"/>
                         </p:panel>
+                        <p:panel id="Status" header="Status Code" style="margin-bottom:20px">
+                            <h:panelGrid columns="2" cellpadding="5">
+                                <p:outputLabel for="openbug" value="Open Bug" />
+                                <h:outputText id="openbug" value="11, 13, 17, 25, 40"/>
+
+                                <p:outputLabel for="opener" value="Open ER" />
+                                <h:outputText id="opener" value="15, 19, 25"/>
+                                
+                                <p:outputLabel for="sendback" value="Send Back" />
+                                <h:outputText id="sendback" value="20, 30, 31, 32, 36, 43, 44"/>
+
+                                <p:outputLabel for="open" value="Open" />
+                                <h:outputText id="open" value="Open Bug + Open ER + Send Back"/>
+
+                                <p:outputLabel for="fixavailable" value="Fix Available" />
+                                <h:outputText id="fixavailable" value="60"/>
+
+                                <p:outputLabel for="fixdelivered" value="Fix Delivered" />
+                                <h:outputText id="fixdelivered" value="80"/>
+
+                                <p:outputLabel for="closed" value="Closed" />
+                                <h:outputText id="closed" value="74, 82, 83, 84, 90, 91, 92, 93, 94, 96, 97"/>
+
+                                <p:outputLabel for="fixed" value="Fixed" />
+                                <h:outputText id="fixed" value="Fix Delivered + Closed"/>
+                            </h:panelGrid>
+                        </p:panel>
                         <p:panel id="Statistics" header="Weekly Report Statistics" style="margin-bottom:20px">
                             <h:panelGrid columns="2" cellpadding="5">
                                 <p:outputLabel for="timePeriod" value="Time Period (Days)" />
