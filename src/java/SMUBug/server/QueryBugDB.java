@@ -5,6 +5,7 @@
 package SMUBug.server;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -103,23 +104,53 @@ public class QueryBugDB {
 
     public String generateSql(String productID, String component, String subcomponent) {
         String col = "h.rptno, h.rptdate, h.fixed_date, h.programmer, h.utility_version, h.subject, h.status, bt.tags";
-        String condition = String.format("h.product_id in (%s) and h.category in ('%s') and h.SUB_COMPONENT in ('%s')", productID, component, subcomponent);
+        String condition = null;
+        if (subcomponent.isEmpty() && !component.isEmpty()) {
+            condition = String.format("h.product_id in (%s) and h.category in ('%s')", productID, component);
+        } else if (subcomponent.isEmpty() && component.isEmpty()) {
+            condition = String.format("h.product_id in (%s)", productID, component);
+        } else if (!subcomponent.isEmpty() && component.isEmpty()) {
+            condition = String.format("h.product_id in (%s) and h.SUB_COMPONENT in ('%s')", productID, subcomponent);
+        } else {
+            condition = String.format("h.product_id in (%s) and h.category in ('%s') and h.SUB_COMPONENT in ('%s')", productID, component, subcomponent);
+        }
         String order = "order by h.rptno desc";
         String sql = String.format("select %s from rpthead h left join bug_tags bt on h.rptno = bt.rptno where %s %s", col, condition, order);
         return sql;
     }
 
-    public List<Bug> getAllBugs(String productID, String component, String subcomponent) {
-        String sql = generateSql(productID, component, subcomponent);
+    public String generateSql(String productID, String component, String subcomponent, String startDate, String endDate) {
+        System.out.println(startDate);
+        System.out.println(endDate);
+        String col = "h.rptno, h.rptdate, h.fixed_date, h.programmer, h.utility_version, h.subject, h.status, bt.tags";
+        String condition = null;
+        if (subcomponent.isEmpty() && !component.isEmpty()) {
+            condition = String.format("h.product_id in (%s) and h.category in ('%s')", productID, component);
+        } else if (subcomponent.isEmpty() && component.isEmpty()) {
+            condition = String.format("h.product_id in (%s)", productID, component);
+        } else if (!subcomponent.isEmpty() && component.isEmpty()) {
+            condition = String.format("h.product_id in (%s) and h.SUB_COMPONENT in ('%s')", productID, subcomponent);
+        } else {
+            condition = String.format("h.product_id in (%s) and h.category in ('%s') and h.SUB_COMPONENT in ('%s')", productID, component, subcomponent);
+        }
+        String reportDate = String.format("(h.rptdate >= to_date('%s','mm/dd/yyyy') and h.rptdate <= to_date('%s','mm/dd/yyyy'))", startDate, endDate);
+        String fixDate = String.format("(h.FIXED_DATE >= to_date('%s','mm/dd/yyyy') and h.FIXED_DATE <= to_date('%s','mm/dd/yyyy'))", startDate, endDate);
+        String order = "order by h.rptno desc";
+        String sql = String.format("select %s from rpthead h left join bug_tags bt on h.rptno = bt.rptno where %s and (%s or %s) %s", col, condition, reportDate, fixDate, order);
+        return sql;
+    }
+
+    public List<Bug> getAllBugs(String productID, String component, String subcomponent, String startDate, String endDate) {
+        String sql = generateSql(productID, component, subcomponent, startDate, endDate);
         List<Bug> res = execute(sql);
         return res;
     }
 
-    public BugReport generateBugReport(String username, String password, String productID, String component, String subcomponent) {
+    public BugReport generateBugReport(String username, String password, String productID, String component, String subcomponent, String startDate, String endDate) {
         BugReport br = new BugReport();
         try {
             openConnection(username, password);
-            br.setBugReport(getAllBugs(productID, component, subcomponent));
+            br.setBugReport(getAllBugs(productID, component, subcomponent, startDate, endDate));
             closeConnection();
         } catch (SQLException ex) {
             try {

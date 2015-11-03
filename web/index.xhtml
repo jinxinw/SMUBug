@@ -28,10 +28,10 @@
                 <p:inputText id="subcomponent" value="#{appHandler.user.subcomponent}" required="false" />
 
                 <p:outputLabel for="button1" value="Start Date" />
-                <p:calendar id="button1" value="#{appHandler.user.startDate}" showOn="button" />
+                <p:calendar id="button1" value="#{appHandler.user.startDate}" showOn="button" required="true" />
 
                 <p:outputLabel for="button2" value="End Date" />
-                <p:calendar id="button2" value="#{appHandler.user.endDate}" showOn="button" />
+                <p:calendar id="button2" value="#{appHandler.user.endDate}" showOn="button" required="true" />
             </h:panelGrid>
             <p:commandButton value="Generate Report" actionListener="#{appHandler.click}" icon="ui-icon-check"/>
         </h:form>
