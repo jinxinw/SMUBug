@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package SMUBug.server;
+package SMUBug.test;
 
+import SMUBug.server.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
  *
  * @author vijin
  */
-public class QueryBugDB {
+public class QueryBugDBTest {
     // Bug Production DB TNSNAME
 
     private final String productionBugDB = "(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=amogridxp01-scan.us.oracle.com)(PORT = 1523)) (CONNECT_DATA=(SERVER=DEDICATED)(SERVICE_NAME = bugap_adx.us.oracle.com)))";
@@ -24,7 +25,7 @@ public class QueryBugDB {
     private final String userAcceptanceBugDB = "(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=ON)(ADDRESS=(PROTOCOL=tcp)(HOST=atd205-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd205-crs.us.oracle.com)(PORT=1522))(ADDRESS=(PROTOCOL=tcp)(HOST=atd206-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd206-crs.us.oracle.com)(PORT=1522))(ADDRESS=(PROTOCOL=tcp)(HOST=atd207-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd207-crs.us.oracle.conm)(PORT=1522))(ADDRESS=(PROTOCOL=tcp)(HOST=atd208-crs.us.oracle.com)(PORT=1521))(ADDRESS=(PROTOCOL=tcp)(HOST=atd208-crs.us.oracle.com)(PORT=1522)))(CONNECT_DATA=(SERVICE_NAME=bugau.us.oracle.com)))";
     public Connection conn;
 
-    public QueryBugDB() {
+    public QueryBugDBTest() {
     }
 
     public void openConnection(String username, String password) throws SQLException {
@@ -44,6 +45,41 @@ public class QueryBugDB {
             conn.close();
             System.out.println("close connection");
             conn = null;
+        }
+    }
+
+    public void test(String query) {
+        Statement stmt = null;
+        ResultSet rset = null;
+        try {
+            stmt = conn.createStatement();
+            rset = stmt.executeQuery(query);
+            int lineNo = 1;
+            while (rset.next()) {
+                System.out.println(lineNo++);
+                int count = rset.getMetaData().getColumnCount();
+                System.out.println(count);
+                for (int i=1; i<=count; i++){
+                    System.out.println(rset.getMetaData().getColumnLabel(i) + ": " + rset.getString(i));
+                }
+            }
+            rset.close();
+            stmt.close();
+        } catch (SQLException e) {
+            System.out.println("Darn! A SQL error: " + e.getMessage());
+        } finally {
+            if (rset != null) {
+                try {
+                    rset.close();
+                } catch (SQLException ignore) {
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException ignore) {
+                }
+            }
         }
     }
 
@@ -109,8 +145,8 @@ public class QueryBugDB {
         return sql;
     }
 
-    public List<Bug> getAllBugs(String productID, String component, String subcomponent) {
-        String sql = generateSql(productID, component, subcomponent);
+    public List<Bug> getAllBugs() {
+        String sql = generateSql();
         List<Bug> res = execute(sql);
         return res;
     }
@@ -119,7 +155,7 @@ public class QueryBugDB {
         BugReport br = new BugReport();
         try {
             openConnection(username, password);
-            br.setBugReport(getAllBugs(productID, component, subcomponent));
+            br.setBugReport(getAllBugs());
             closeConnection();
         } catch (SQLException ex) {
             try {
@@ -139,5 +175,21 @@ public class QueryBugDB {
         int month = Integer.parseInt(sa1[1]);
         int day = Integer.parseInt(sa1[2]);
         return new GregorianCalendar(year, month - 1, day);
+    }
+
+    public static void main(String[] args) {
+        QueryBugDBTest q = new QueryBugDBTest();
+        try {
+            q.openConnection("VIJIN", "198800Jxw");
+            q.test(q.generateSql("10026", "NAS", "STMF"));
+            q.closeConnection();
+        } catch (SQLException ex) {
+            try {
+                q.closeConnection();
+            } catch (SQLException ex1) {
+                Logger.getLogger(QueryBugDB.class.getName()).log(Level.SEVERE, null, ex1);
+            }
+        }
+
     }
 }

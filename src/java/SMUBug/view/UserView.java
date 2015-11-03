@@ -14,6 +14,9 @@ public class UserView implements Serializable {
     private String password;
     private Date startDate;
     private Date endDate;
+    private String productID;
+    private String component;
+    private String subcomponent;
 
     public UserView() {
     }
@@ -48,6 +51,30 @@ public class UserView implements Serializable {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public String getProductID() {
+        return productID;
+    }
+
+    public void setProductID(String productID) {
+        this.productID = productID;
+    }
+
+    public String getComponent() {
+        return component;
+    }
+
+    public void setComponent(String component) {
+        this.component = component;
+    }
+
+    public String getSubcomponent() {
+        return subcomponent;
+    }
+
+    public void setSubcomponent(String subcomponent) {
+        this.subcomponent = subcomponent;
     }
 
     public String getMessage() {

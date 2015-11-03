@@ -284,7 +284,7 @@ public class AppHandler implements Serializable {
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(user.getEndDate());
         QueryBugDB qbd = new QueryBugDB();
-        bugReport = qbd.generateBugReport(user.getName(), user.getPassword());
+        bugReport = qbd.generateBugReport(user.getName(), user.getPassword(), user.getProductID(), user.getComponent(), user.getSubcomponent());
         bugs = new BugSummaryTableView();
         initReleaseSelect(cal1);
         initTargetSelect(cal1);
