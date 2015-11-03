@@ -8,7 +8,7 @@
         <link rel="login icon" href='./img/header.ico' />
     </h:head>
     <h:body>
-        <h1>SMU Bug Statistics :)</h1>
+        <h1>Bug Statistics :)</h1>
         <br />
         <h:form>
             <h:panelGrid columns="2" cellpadding="5">
@@ -17,6 +17,15 @@
 
                 <p:outputLabel for="pwd" value="Password" />
                 <p:password id="pwd" value="#{appHandler.user.password}" required="true" />
+
+                <p:outputLabel for="productID" value="Product ID" />
+                <p:inputText id="productID" value="#{appHandler.user.productID}" required="true" />
+
+                <p:outputLabel for="Component" value="Component" />
+                <p:inputText id="Component" value="#{appHandler.user.component}" required="false" />
+
+                <p:outputLabel for="subcomponent" value="Subcomponent" />
+                <p:inputText id="subcomponent" value="#{appHandler.user.subcomponent}" required="false" />
 
                 <p:outputLabel for="button1" value="Start Date" />
                 <p:calendar id="button1" value="#{appHandler.user.startDate}" showOn="button" />
