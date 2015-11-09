@@ -138,10 +138,10 @@ public class QueryBugDBTest {
     }
 
     public String generateSql(String productID, String component, String subcomponent) {
-        String col = "h.rptno, h.rptdate, h.fixed_date, h.programmer, h.utility_version, h.subject, h.status, bt.tags";
+        String col = "h.rptno, h.rptdate, h.fixed_date, h.programmer, h.utility_version, h.subject, h.status, bt.tags, cb.sr_status";
         String condition = String.format("h.product_id in (%s) and h.category in ('%s') and h.SUB_COMPONENT in ('%s')", productID, component, subcomponent);
         String order = "order by h.rptno desc";
-        String sql = String.format("select %s from rpthead h left join bug_tags bt on h.rptno = bt.rptno where %s %s", col, condition, order);
+        String sql = String.format("select %s from rpthead h, bug_tags bt, customer_bugs cb where cb.rptno=h.rptno and h.rptno = bt.rptno and UPPER(cb.sr_status) = 'OPEN' and %s %s", col, condition, order);
         return sql;
     }
 
@@ -180,7 +180,7 @@ public class QueryBugDBTest {
     public static void main(String[] args) {
         QueryBugDBTest q = new QueryBugDBTest();
         try {
-            q.openConnection("VIJIN", "198800Jxw");
+            q.openConnection("VIJIN", "198800Jxw1");
             q.test(q.generateSql("10026", "NAS", "STMF"));
             q.closeConnection();
         } catch (SQLException ex) {

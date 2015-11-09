@@ -163,10 +163,13 @@ public class AppHandler implements Serializable {
         for (String s : map.keySet()) {
             String[] sa = s.split(" to ");
             Integer[] value = map.get(s);
+            List<List<Bug>> valueList = getBugDetail(toCalendar(sa[0]), toCalendar(sa[1]));
             BugSummary bs = new BugSummary(i++, sa[0], sa[1], value[0], value[1], value[2]);
-            bs.setReportedList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(0));
-            bs.setFixedList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(1));
-            bs.setSendedBackList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(2));
+            bs.setReportedList(valueList.get(0));
+            bs.setFixedList(valueList.get(1));
+            bs.setSendedBackList(valueList.get(2));
+            bs.setSrNum(value[3]);
+            bs.setSrList(valueList.get(3));
             bugs.addBug(bs);
         }
         createAreaModel();
@@ -288,7 +291,8 @@ public class AppHandler implements Serializable {
         cal2.setTime(user.getEndDate());
         QueryBugDB qbd = new QueryBugDB();
         bugReport = qbd.generateBugReport(user.getName(), user.getPassword(), user.getProductID(), user.getComponent(), user.getSubcomponent(),
-                new SimpleDateFormat("dd/MM/yyyy").format(user.getStartDate()), new SimpleDateFormat("MM/dd/yyyy").format(user.getEndDate()));
+                new SimpleDateFormat("MM/dd/yyyy").format(user.getStartDate()), new SimpleDateFormat("MM/dd/yyyy").format(user.getEndDate()));
+        System.out.println(bugReport.getBugReport().size());
         bugs = new BugSummaryTableView();
         initReleaseSelect(cal1);
         initTargetSelect(cal1);
@@ -301,10 +305,13 @@ public class AppHandler implements Serializable {
         for (String s : map.keySet()) {
             String[] sa = s.split(" to ");
             Integer[] value = map.get(s);
+            List<List<Bug>> valueList = getBugDetail(toCalendar(sa[0]), toCalendar(sa[1]));
             BugSummary bs = new BugSummary(i++, sa[0], sa[1], value[0], value[1], value[2]);
-            bs.setReportedList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(0));
-            bs.setFixedList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(1));
-            bs.setSendedBackList(getBugDetail(toCalendar(sa[0]), toCalendar(sa[1])).get(2));
+            bs.setReportedList(valueList.get(0));
+            bs.setFixedList(valueList.get(1));
+            bs.setSendedBackList(valueList.get(2));
+            bs.setSrNum(value[3]);
+            bs.setSrList(valueList.get(3));
             bugs.addBug(bs);
         }
         createAreaModel();

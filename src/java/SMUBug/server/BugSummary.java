@@ -15,9 +15,11 @@ public class BugSummary implements Serializable {
     private int reportedNum;
     private int fixedNum;
     private int sendedBackNum;
+    private int srNum;
     private List<Bug> reportedList;
     private List<Bug> fixedList;
     private List<Bug> sendedBackList;
+    private List<Bug> srList;
 
     public BugSummary(int weekNum, String weekStart, String weekEnd, int reportedNum, int fixedNum, int sendedBackNum) {
         this.weekNum = weekNum;
@@ -98,6 +100,22 @@ public class BugSummary implements Serializable {
 
     public void setSendedBackList(List<Bug> sendedBackList) {
         this.sendedBackList = sendedBackList;
+    }
+
+    public int getSrNum() {
+        return srNum;
+    }
+
+    public void setSrNum(int srNum) {
+        this.srNum = srNum;
+    }
+
+    public List<Bug> getSrList() {
+        return srList;
+    }
+
+    public void setSrList(List<Bug> srList) {
+        this.srList = srList;
     }
 
 }

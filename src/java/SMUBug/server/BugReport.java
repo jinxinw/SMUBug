@@ -74,20 +74,34 @@ public class BugReport implements Serializable {
         int report = 0;
         int fix = 0;
         int sendBack = 0;
-        int[] res = new int[3];
+        int sr = 0;
+        int[] res = new int[4];
         for (Bug b : bugs) {
             if (matchCriteria(b, criteria)) {
+                boolean added = false;
                 if (b.getReportedDate().after(cal1) && b.getReportedDate().before(cal2) || b.getReportedDate().equals(cal1)) {
                     report++;
+                    if (b.getSrStatus().equals("OPEN") && !added) {
+                        sr++;
+                        added = true;
+                    }
                 }
                 if (b.getFixedDate() != null) {
                     if ((b.getFixedDate().after(cal1) && b.getFixedDate().before(cal2) || b.getFixedDate().equals(cal1)) && containsStatus(SMU_FIX, b.getStatus())) {
                         fix++;
+                        if (b.getSrStatus().equals("OPEN") && !added) {
+                            sr++;
+                            added = true;
+                        }
                     }
                 }
                 if (b.getFixedDate() != null) {
                     if ((b.getFixedDate().after(cal1) && b.getFixedDate().before(cal2) || b.getFixedDate().equals(cal1)) && containsStatus(SMU_SENDBACK, b.getStatus())) {
                         sendBack++;
+                        if (b.getSrStatus().equals("OPEN") && !added) {
+                            sr++;
+                            added = true;
+                        }
                     }
                 }
             }
@@ -95,6 +109,7 @@ public class BugReport implements Serializable {
         res[0] = report;
         res[1] = fix;
         res[2] = sendBack;
+        res[3] = sr;
         return res;
     }
 
@@ -200,20 +215,34 @@ public class BugReport implements Serializable {
         List<Bug> report = new ArrayList<Bug>();
         List<Bug> fix = new ArrayList<Bug>();
         List<Bug> sendBack = new ArrayList<Bug>();
+        List<Bug> sr = new ArrayList<Bug>();
         for (Bug b : bugReport) {
             if (matchCriteria(b, criteria)) {
+                boolean added = false;
                 //System.out.println(b.getReportedDate().getTime() + " " + cal1.getTime() + " " + cal2.getTime());
                 if (b.getReportedDate().after(cal1) && b.getReportedDate().before(cal2) || b.getReportedDate().equals(cal1)) {
                     report.add(b);
+                    if (b.getSrStatus().equals("OPEN") && !added) {
+                        sr.add(b);
+                        added = true;
+                    }
                 }
                 if (b.getFixedDate() != null) {
                     if ((b.getFixedDate().after(cal1) && b.getFixedDate().before(cal2) || b.getFixedDate().equals(cal1)) && containsStatus(SMU_FIX, b.getStatus())) {
                         fix.add(b);
                     }
+                    if (b.getSrStatus().equals("OPEN") && !added) {
+                        sr.add(b);
+                        added = true;
+                    }
                 }
                 if (b.getFixedDate() != null) {
                     if ((b.getFixedDate().after(cal1) && b.getFixedDate().before(cal2) || b.getFixedDate().equals(cal1)) && containsStatus(SMU_SENDBACK, b.getStatus())) {
                         sendBack.add(b);
+                        if (b.getSrStatus().equals("OPEN") && !added) {
+                            sr.add(b);
+                            added = true;
+                        }
                     }
                 }
             }
@@ -221,6 +250,7 @@ public class BugReport implements Serializable {
         res.add(report);
         res.add(fix);
         res.add(sendBack);
+        res.add(sr);
         return res;
     }
 
@@ -270,5 +300,13 @@ public class BugReport implements Serializable {
             }
         }
         return res;
+    }
+
+    public int[] getBugStatus() {
+        return bugStatus;
+    }
+
+    public void setBugStatus(int[] bugStatus) {
+        this.bugStatus = bugStatus;
     }
 }

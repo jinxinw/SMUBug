@@ -71,6 +71,7 @@ public class QueryBugDB {
                 bug.setSubject(rset.getString(6));
                 bug.setStatus(Integer.parseInt(rset.getString(7)));
                 bug.setTag(rset.getString(8) == null ? "" : rset.getString(8));
+                bug.setSrStatus(rset.getString(9) == null ? "NONE" : rset.getString(9));
                 list.add(bug);
             }
             rset.close();
@@ -103,7 +104,7 @@ public class QueryBugDB {
     }
 
     public String generateSql(String productID, String component, String subcomponent) {
-        String col = "h.rptno, h.rptdate, h.fixed_date, h.programmer, h.utility_version, h.subject, h.status, bt.tags";
+        String col = "h.rptno, h.rptdate, h.fixed_date, h.programmer, h.utility_version, h.subject, h.status, bt.tags, cb.sr_status";
         String condition = null;
         if (subcomponent.isEmpty() && !component.isEmpty()) {
             condition = String.format("h.product_id in (%s) and h.category in ('%s')", productID, component);
@@ -115,14 +116,14 @@ public class QueryBugDB {
             condition = String.format("h.product_id in (%s) and h.category in ('%s') and h.SUB_COMPONENT in ('%s')", productID, component, subcomponent);
         }
         String order = "order by h.rptno desc";
-        String sql = String.format("select %s from rpthead h left join bug_tags bt on h.rptno = bt.rptno where %s %s", col, condition, order);
+        String sql = String.format("select %s from rpthead h, bug_tags bt, customer_bugs cb where cb.rptno=h.rptno and h.rptno = bt.rptno and %s %s", col, condition, order);
         return sql;
     }
 
     public String generateSql(String productID, String component, String subcomponent, String startDate, String endDate) {
         System.out.println(startDate);
         System.out.println(endDate);
-        String col = "h.rptno, h.rptdate, h.fixed_date, h.programmer, h.utility_version, h.subject, h.status, bt.tags";
+        String col = "h.rptno, h.rptdate, h.fixed_date, h.programmer, h.utility_version, h.subject, h.status, bt.tags, cb.sr_status";
         String condition = null;
         if (subcomponent.isEmpty() && !component.isEmpty()) {
             condition = String.format("h.product_id in (%s) and h.category in ('%s')", productID, component);
@@ -136,7 +137,7 @@ public class QueryBugDB {
         String reportDate = String.format("(h.rptdate >= to_date('%s','mm/dd/yyyy') and h.rptdate <= to_date('%s','mm/dd/yyyy'))", startDate, endDate);
         String fixDate = String.format("(h.FIXED_DATE >= to_date('%s','mm/dd/yyyy') and h.FIXED_DATE <= to_date('%s','mm/dd/yyyy'))", startDate, endDate);
         String order = "order by h.rptno desc";
-        String sql = String.format("select %s from rpthead h left join bug_tags bt on h.rptno = bt.rptno where %s and (%s or %s) %s", col, condition, reportDate, fixDate, order);
+        String sql = String.format("select %s from (rpthead h LEFT JOIN bug_tags bt ON h.rptno = bt.rptno) LEFT JOIN customer_bugs cb on cb.rptno=h.rptno where %s and (%s or %s) %s", col, condition, reportDate, fixDate, order);
         return sql;
     }
 

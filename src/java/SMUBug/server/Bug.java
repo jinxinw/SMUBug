@@ -19,7 +19,9 @@ public class Bug implements Serializable {
     private String release;
     private String subject;
     private String tag;
-    private String urlPrefix = "https://bug.oraclecorp.com/pls/bug/webbug_edit.edit_info_top?rptno="; 
+    private String srStatus;
+    private String urlPrefix = "https://bug.oraclecorp.com/pls/bug/webbug_edit.edit_info_top?rptno=";
+    private String srUrlPrefix = "https://bug.oraclecorp.com/pls/bug/customer_bugs_ui.search?prptno=";
 
     public Bug() {
     }
@@ -105,9 +107,28 @@ public class Bug implements Serializable {
     public void setTag(String tag) {
         this.tag = tag;
     }
-    
+
+    public String getSrStatus() {
+        return srStatus;
+    }
+
+    public void setSrStatus(String srStatus) {
+        this.srStatus = srStatus;
+    }
+
     public String getURL() {
         return urlPrefix + String.valueOf(id);
+    }
+
+    public String getSrURL() {
+        return srUrlPrefix + String.valueOf(id);
+    }
+
+    @Override
+    public String toString() {
+        String start = new SimpleDateFormat("MM/dd/yyyy").format(reportedDate.getTime());
+        String end = fixedDate == null ? "NULL" : new SimpleDateFormat("MM/dd/yyyy").format(fixedDate.getTime());
+        return "Bug{" + "lineNum=" + lineNum + ", id=" + id + ", status=" + status + ", reportedDate=" + start + ", fixedDate=" + end + ", assignee=" + assignee + ", release=" + release + ", subject=" + subject + ", tag=" + tag + ", srStatus=" + srStatus + ", urlPrefix=" + urlPrefix + ", srUrlPrefix=" + srUrlPrefix + '}';
     }
 
 }
